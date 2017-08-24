@@ -38,4 +38,9 @@ then
 fi
 
 # Run the muxing job via FFmpeg.
-ffmpeg -ss $START_TIMECODE -i $VIDEO -i $AUDIO -map 0:0 -map 1:0 -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" -shortest output.webm
+ffmpeg  -ss $START_TIMECODE -i $VIDEO -i $AUDIO \
+        -map 0:0 -map 1:0 \
+        -map_metadata 1 \
+        -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
+        -shortest \
+        output.mp4
