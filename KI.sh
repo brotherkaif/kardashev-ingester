@@ -1,32 +1,32 @@
 #/bin/bash
 # Ingesting script that uses FFmpeg to convert input video and audio into a standardised 1:1 format.
 
+
 # Initialise our variables.
-VIDEO=""
-AUDIO=""
+INPUT_VIDEO=""
+INPUT_AUDIO=""
 START_TIMECODE=""
-META_TITLE=""
-META_ARTIST=""
-META_ALBUM_ARTIST=""
-META_ALBUM=""
-META_DATE=""
-META_TRACK=""
-META_GENRE=""
-META_COPYRIGHT=""
+META_KEYS=(title artist album_artist album date track genre audio_URL audio_copyright video_URL video_copyright)
+META_VALUES=()
 META_COMMENT=""
+MANUAL_META=false
+
 
 # Get input arguements and assign them to variables.
-while getopts ":v:a:t:" opt;
+while getopts ":v:a:t:m" opt;
 do
     case $opt in
         v)
-            VIDEO=$OPTARG 
+            INPUT_VIDEO=$OPTARG 
             ;;
         a)
-            AUDIO=$OPTARG 
+            INPUT_AUDIO=$OPTARG 
             ;; 
         t)
             START_TIMECODE=$OPTARG 
+            ;;
+        m)
+            MANUAL_META=true
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
@@ -39,35 +39,54 @@ do
     esac
 done
 
+
 # If no arguments passed through, exit gracefully.
-if [ -z "$VIDEO" ] || [ -z "$AUDIO" ] || [ -z "$START_TIMECODE" ] 
+if [ -z "$INPUT_VIDEO" ] || [ -z "$INPUT_AUDIO" ] || [ -z "$START_TIMECODE" ] 
 then
     echo 'Something went wrong! You need to specify video (-v), audio (-a) and start timecode (-t).' >&2
     exit 1
 fi
 
-# Extract the required metadata.
-META_TITLE=$( ffprobe -v error -show_entries format_tags=title -of default=noprint_wrappers=1:nokey=1 $AUDIO )
-META_ARTIST=$( ffprobe -v error -show_entries format_tags=artist -of default=noprint_wrappers=1:nokey=1 $AUDIO )
-META_ALBUM_ARTIST=$( ffprobe -v error -show_entries format_tags=album_artist -of default=noprint_wrappers=1:nokey=1 $AUDIO )
-META_ALBUM=$( ffprobe -v error -show_entries format_tags=album -of default=noprint_wrappers=1:nokey=1 $AUDIO )
-META_DATE=$( ffprobe -v error -show_entries format_tags=date -of default=noprint_wrappers=1:nokey=1 $AUDIO )
-META_TRACK=$( ffprobe -v error -show_entries format_tags=track -of default=noprint_wrappers=1:nokey=1 $AUDIO )
-META_GENRE=$( ffprobe -v error -show_entries format_tags=genre -of default=noprint_wrappers=1:nokey=1 $AUDIO )
-META_COPYRIGHT=$( ffprobe -v error -show_entries format_tags=copyright -of default=noprint_wrappers=1:nokey=1 $AUDIO )
-META_COMMENT=$( ffprobe -v error -show_entries format_tags=comment -of default=noprint_wrappers=1:nokey=1 $AUDIO )
+
+# Iterate through all of the META_KEYS and get the META_VALUES.
+for ITERATION in {0..10}
+do
+    # If manual override has not been activated, attempt to get info from INPUT_AUDIO.
+    if [ $MANUAL_META = false ]
+    then
+       META_VALUES[$ITERATION]="$( ffprobe -v error -show_entries format_tags=${META_KEYS[$ITERATION]} -of default=noprint_wrappers=1:nokey=1 $INPUT_AUDIO )"
+    fi
+    
+    # If the META_VALUE is empty for some reason, ask the user to input it manually.
+    if [ -z "${META_VALUES[$ITERATION]}" ]
+    then
+        read -p "Enter the ${META_KEYS[$ITERATION]}: " META_VALUES[$ITERATION]
+    fi
+done
+
+
+# Once all the META_VALUES have been collected create the META_COMMENT value
+META_COMMENT="[AUDIO DETAILS]
+URL: ${META_VALUES[7]}
+Copyright: ${META_VALUES[8]}
+
+[VIDEO DETAILS]
+URL: ${META_VALUES[9]}
+Copyright: ${META_VALUES[10]}"
+    
 
 # Run the muxing job via FFmpeg.
-ffmpeg  -ss $START_TIMECODE -i $VIDEO -i $AUDIO \
+ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
         -map 0:0 -map 1:0 \
-        -metadata title="$META_TITLE" \
-        -metadata artist="$META_ARTIST" \
-        -metadata album_artist="$META_ALBUM_ARTIST" \
-        -metadata album="$META_ALBUM" \
-        -metadata date="$META_DATE" \
-        -metadata track="$META_TRACK" \
-        -metadata genre="$META_GENRE" \
+        -metadata ${META_KEYS[0]}="${META_VALUES[0]}" \
+        -metadata ${META_KEYS[1]}="${META_VALUES[1]}" \
+        -metadata ${META_KEYS[2]}="${META_VALUES[2]}" \
+        -metadata ${META_KEYS[3]}="${META_VALUES[3]}" \
+        -metadata ${META_KEYS[4]}="${META_VALUES[4]}" \
+        -metadata ${META_KEYS[5]}="${META_VALUES[5]}" \
+        -metadata ${META_KEYS[6]}="${META_VALUES[6]}" \
+        -metadata ${META_KEYS[7]}="${META_VALUES[7]}" \
         -metadata comment="$META_COMMENT" \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
-        -shortest \
+        -t 00:00:05 \
         output.mp4
