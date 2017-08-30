@@ -88,5 +88,5 @@ ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
         -metadata ${META_KEYS[7]}="${META_VALUES[7]}" \
         -metadata comment="$META_COMMENT" \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
-        -t 00:00:05 \
+        -shortest \
         output.mp4
