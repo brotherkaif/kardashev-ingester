@@ -1,6 +1,46 @@
 #/bin/bash
 # Ingesting script that uses FFmpeg to convert input video and audio into a standardised 1:1 format.
 
+# START OF FUNCTION DECLARATIONS
+# ==============================
+
+# FUNCTION: Gets metadata for final file. Set MANUAL_META before calling to toggle manual entry.
+Get_Metadata () {
+
+        # Iterate through all of the META_KEYS and get the META_VALUES.
+        for ITERATION in {0..10}
+        do
+                # If manual override has not been activated, attempt to get info from INPUT_AUDIO.
+                if [ $MANUAL_META = false ]
+                then
+                        META_VALUES[$ITERATION]="$( ffprobe -v error -show_entries format_tags=${META_KEYS[$ITERATION]} -of default=noprint_wrappers=1:nokey=1 $INPUT_AUDIO )"
+                fi
+
+                # If the META_VALUE is empty for some reason, ask the user to input it manually.
+                if [ -z "${META_VALUES[$ITERATION]}" ]
+                then
+                        read -p "Enter the ${META_KEYS[$ITERATION]}: " META_VALUES[$ITERATION]
+                fi
+        done
+
+        # Once all the META_VALUES have been collected create the META_COMMENT value
+        META_COMMENT="[AUDIO DETAILS]
+        URL: ${META_VALUES[7]}
+        Copyright: ${META_VALUES[8]}
+
+        [VIDEO DETAILS]
+        URL: ${META_VALUES[9]}
+        Copyright: ${META_VALUES[10]}"
+
+ }
+
+# ============================
+# END OF FUNCTION DECLARATIONS
+ 
+
+
+# START OF SCRIPT
+# ===============
 
 # Initialise our variables.
 INPUT_VIDEO=""
@@ -47,33 +87,7 @@ then
     exit 1
 fi
 
-
-# Iterate through all of the META_KEYS and get the META_VALUES.
-for ITERATION in {0..10}
-do
-    # If manual override has not been activated, attempt to get info from INPUT_AUDIO.
-    if [ $MANUAL_META = false ]
-    then
-       META_VALUES[$ITERATION]="$( ffprobe -v error -show_entries format_tags=${META_KEYS[$ITERATION]} -of default=noprint_wrappers=1:nokey=1 $INPUT_AUDIO )"
-    fi
-    
-    # If the META_VALUE is empty for some reason, ask the user to input it manually.
-    if [ -z "${META_VALUES[$ITERATION]}" ]
-    then
-        read -p "Enter the ${META_KEYS[$ITERATION]}: " META_VALUES[$ITERATION]
-    fi
-done
-
-
-# Once all the META_VALUES have been collected create the META_COMMENT value
-META_COMMENT="[AUDIO DETAILS]
-URL: ${META_VALUES[7]}
-Copyright: ${META_VALUES[8]}
-
-[VIDEO DETAILS]
-URL: ${META_VALUES[9]}
-Copyright: ${META_VALUES[10]}"
-    
+Get_Metadata
 
 # Run the muxing job via FFmpeg.
 ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
@@ -90,3 +104,6 @@ ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
         -shortest \
         output.mp4
+
+# =============
+# END OF SCRIPT
