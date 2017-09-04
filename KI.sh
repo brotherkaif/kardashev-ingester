@@ -4,6 +4,53 @@
 # START OF FUNCTION DECLARATIONS
 # ==============================
 
+# FUNCTION: Calculates the timecode value in HH:MM:SS format when a time in seconds is supplied.
+Calculate_Timecode () {
+        num=$1
+        min=0
+        hour=0
+        day=0
+        if((num>59));
+        then
+                ((sec=num%60))
+                ((num=num/60))
+                if((num>59));
+                then
+                        ((min=num%60))
+                        ((hour=num/60))
+                else
+                        ((min=num))
+                fi
+        else
+                ((sec=num))
+        fi
+
+        echo $( printf "%02d" $hour ):$( printf "%02d" $min ):$( printf "%02d" $sec )
+}
+
+# FUNCTION: Constructs the titles.
+Construct_Titles () {
+        
+        # Get duration of track using FFprobe.
+        TC_DURATION_SECONDS=$(ffprobe -i $INPUT_AUDIO -show_format -v quiet | sed -n 's/duration=//p' | cut -d. -f1 )
+        TC_INTRO_TITLE_START="00:00:02"
+        TC_INTRO_TITLE_END="00:00:10"
+        TC_OUTRO_TITLE_START=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 10 )) )
+        TC_OUTRO_TITLE_END=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 2 )) )
+
+        # TESTING
+        echo
+        echo TIMECODES FOR SRT
+        echo
+        echo TC_DURATION_SECONDS calculated as: $( Calculate_Timecode $TC_DURATION_SECONDS ) 
+        echo TC_INTRO_TITLE_START calculated as: $TC_INTRO_TITLE_START
+        echo TC_INTRO_TITLE_END calculated as: $TC_INTRO_TITLE_END
+        echo TC_OUTRO_TITLE_START calculated as: $TC_OUTRO_TITLE_START 
+        echo TC_OUTRO_TITLE_END calculated as: $TC_OUTRO_TITLE_END 
+        echo
+
+}
+
 # FUNCTION: Gets metadata for final file. Set MANUAL_META before calling to toggle manual entry.
 Get_Metadata () {
 
@@ -11,7 +58,7 @@ Get_Metadata () {
         for ITERATION in {0..10}
         do
                 # If manual override has not been activated, attempt to get info from INPUT_AUDIO.
-                if [ $MANUAL_META = false ]
+                if [ $OPT_MANUAL_META = false ]
                 then
                         META_VALUES[$ITERATION]="$( ffprobe -v error -show_entries format_tags=${META_KEYS[$ITERATION]} -of default=noprint_wrappers=1:nokey=1 $INPUT_AUDIO )"
                 fi
@@ -46,11 +93,18 @@ Get_Metadata () {
 INPUT_VIDEO=""
 INPUT_AUDIO=""
 START_TIMECODE=""
+
+TC_DURATION_SECONDS=""
+TC_INTRO_TITLE_START=""
+TC_INTRO_TITLE_END=""
+TC_OUTRO_TITLE_START=""
+TC_OUTRO_TITLE_END=""
+
 META_KEYS=(title artist album_artist album date track genre audio_URL audio_copyright video_URL video_copyright)
 META_VALUES=()
 META_COMMENT=""
-MANUAL_META=false
 
+OPT_MANUAL_META=false
 
 # Get input arguements and assign them to variables.
 while getopts ":v:a:t:m" opt;
@@ -66,7 +120,7 @@ do
             START_TIMECODE=$OPTARG 
             ;;
         m)
-            MANUAL_META=true
+            OPT_MANUAL_META=true
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
@@ -87,6 +141,7 @@ then
     exit 1
 fi
 
+Construct_Titles
 Get_Metadata
 
 # Run the muxing job via FFmpeg.
@@ -107,3 +162,10 @@ ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
 
 # =============
 # END OF SCRIPT
+
+
+#!/bin/bash
+# A test to try and deal with timecodes
+
+
+
