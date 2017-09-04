@@ -38,24 +38,23 @@ Construct_Titles () {
         TC_OUTRO_TITLE_START=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 10 )) )
         TC_OUTRO_TITLE_END=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 2 )) )
 
-        # TESTING
-        echo
-        echo TIMECODES FOR SRT
-        echo
-        echo TC_DURATION_SECONDS calculated as: $( Calculate_Timecode $TC_DURATION_SECONDS ) 
-        echo TC_INTRO_TITLE_START calculated as: $TC_INTRO_TITLE_START
-        echo TC_INTRO_TITLE_END calculated as: $TC_INTRO_TITLE_END
-        echo TC_OUTRO_TITLE_START calculated as: $TC_OUTRO_TITLE_START 
-        echo TC_OUTRO_TITLE_END calculated as: $TC_OUTRO_TITLE_END 
-        echo
-
-}
+        # Build the titles file in the format of an SRT file.
+        echo "1" >> $TITLES
+        echo "$TC_INTRO_TITLE_START,000 --> $TC_INTRO_TITLE_END,000" >> $TITLES
+        echo "[AUDIO] ${META_VALUES[1]} / '${META_VALUES[0]}' / ${META_VALUES[8]}" >> $TITLES
+        echo "[VIDIO] ${META_VALUES[10]} / '${META_VALUES[9]}' / ${META_VALUES[12]}" >> $TITLES
+        echo >> $TITLES
+        echo "2" >> $TITLES
+        echo "$TC_OUTRO_TITLE_START,000 --> $TC_OUTRO_TITLE_END,000" >> $TITLES
+        echo "[AUDIO] ${META_VALUES[1]} / '${META_VALUES[0]}' / ${META_VALUES[8]}" >> $TITLES
+        echo "[VIDIO] ${META_VALUES[10]} / '${META_VALUES[9]}' / ${META_VALUES[12]}" >> $TITLES
+ }
 
 # FUNCTION: Gets metadata for final file. Set MANUAL_META before calling to toggle manual entry.
 Get_Metadata () {
 
         # Iterate through all of the META_KEYS and get the META_VALUES.
-        for ITERATION in {0..10}
+        for ITERATION in {0..12}
         do
                 # If manual override has not been activated, attempt to get info from INPUT_AUDIO.
                 if [ $OPT_MANUAL_META = false ]
@@ -71,14 +70,18 @@ Get_Metadata () {
         done
 
         # Once all the META_VALUES have been collected create the META_COMMENT value
-        META_COMMENT="[AUDIO DETAILS]
-        URL: ${META_VALUES[7]}
-        Copyright: ${META_VALUES[8]}
-
-        [VIDEO DETAILS]
-        URL: ${META_VALUES[9]}
-        Copyright: ${META_VALUES[10]}"
-
+        echo "[AUDIO DETAILS]" >> $META_COMMENT
+        echo "TITLE: ${META_VALUES[0]}" >> $META_COMMENT
+        echo "ARTIST: ${META_VALUES[1]}" >> $META_COMMENT
+        echo "URL: ${META_VALUES[7]}" >> $META_COMMENT
+        echo "Copyright: ${META_VALUES[8]}" >> $META_COMMENT
+        echo >> $META_COMMENT
+        echo "[VIDEO DETAILS]" >> $META_COMMENT
+        echo "TITLE: ${META_VALUES[9]}" >> $META_COMMENT
+        echo "AUTHOR: ${META_VALUES[10]}" >> $META_COMMENT
+        echo "URL: ${META_VALUES[11]}" >> $META_COMMENT
+        echo "Copyright: ${META_VALUES[12]}" >> $META_COMMENT
+                
  }
 
 # ============================
@@ -94,15 +97,17 @@ INPUT_VIDEO=""
 INPUT_AUDIO=""
 START_TIMECODE=""
 
+TITLES=$(mktemp)
+
 TC_DURATION_SECONDS=""
 TC_INTRO_TITLE_START=""
 TC_INTRO_TITLE_END=""
 TC_OUTRO_TITLE_START=""
 TC_OUTRO_TITLE_END=""
 
-META_KEYS=(title artist album_artist album date track genre audio_URL audio_copyright video_URL video_copyright)
+META_KEYS=(title artist album_artist album date track genre audio_URL audio_copyright video_title video_author video_URL video_copyright)
 META_VALUES=()
-META_COMMENT=""
+META_COMMENT=$(mktemp)
 
 OPT_MANUAL_META=false
 
@@ -141,8 +146,8 @@ then
     exit 1
 fi
 
-Construct_Titles
 Get_Metadata
+Construct_Titles
 
 # Run the muxing job via FFmpeg.
 ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
@@ -155,17 +160,10 @@ ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
         -metadata ${META_KEYS[5]}="${META_VALUES[5]}" \
         -metadata ${META_KEYS[6]}="${META_VALUES[6]}" \
         -metadata ${META_KEYS[7]}="${META_VALUES[7]}" \
-        -metadata comment="$META_COMMENT" \
-        -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
+        -metadata comment="$( cat $META_COMMENT )" \
+        -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720,subtitles=$TITLES:force_style='Alignment=1'" \
         -shortest \
         output.mp4
 
 # =============
 # END OF SCRIPT
-
-
-#!/bin/bash
-# A test to try and deal with timecodes
-
-
-
