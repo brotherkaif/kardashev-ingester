@@ -169,7 +169,7 @@ ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
         -metadata ${META_KEYS[6]}="${META_VALUES[6]}" \
         -metadata ${META_KEYS[7]}="${META_VALUES[7]}" \
         -metadata comment="$( cat $META_COMMENT )" \
-        -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720,subtitles=$TITLES:force_style='Alignment=1'" \
+        -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720,subtitles=$TITLES:force_style='FontName=DejaVu Mono,Alignment=1,Fontsize=8,BorderStyle=3'" \
         $ARG_LENGTH \
         output.mp4
 
