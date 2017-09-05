@@ -111,8 +111,10 @@ META_COMMENT=$(mktemp)
 
 OPT_MANUAL_META=false
 
+ARG_LENGTH="-shortest"
+
 # Get input arguements and assign them to variables.
-while getopts ":v:a:t:m" opt;
+while getopts ":v:a:t:md" opt;
 do
     case $opt in
         v)
@@ -126,6 +128,12 @@ do
             ;;
         m)
             OPT_MANUAL_META=true
+            ;;
+        d)
+            echo DRY RUN MODE
+            echo ============
+            echo Output file will be limited to 30 seconds.
+            ARG_LENGTH="-t 00:00:30"
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
@@ -162,7 +170,7 @@ ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
         -metadata ${META_KEYS[7]}="${META_VALUES[7]}" \
         -metadata comment="$( cat $META_COMMENT )" \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720,subtitles=$TITLES:force_style='Alignment=1'" \
-        -shortest \
+        $ARG_LENGTH \
         output.mp4
 
 # =============
