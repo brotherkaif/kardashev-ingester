@@ -33,21 +33,36 @@ Construct_Titles () {
         
         # Get duration of track using FFprobe.
         TC_DURATION_SECONDS=$(ffprobe -i $INPUT_AUDIO -show_format -v quiet | sed -n 's/duration=//p' | cut -d. -f1 )
-        TC_INTRO_TITLE_START="00:00:02"
-        TC_INTRO_TITLE_END="00:00:10"
-        TC_OUTRO_TITLE_START=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 10 )) )
-        TC_OUTRO_TITLE_END=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 2 )) )
+        TC_AUDIO_INTRO_TITLE_START="00:00:03"
+        TC_AUDIO_INTRO_TITLE_END="00:00:10"
+        TC_VIDEO_INTRO_TITLE_START="00:00:13"
+        TC_VIDEO_INTRO_TITLE_END="00:00:20"
+        TC_AUDIO_OUTRO_TITLE_START=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 20 )) )
+        TC_AUDIO_OUTRO_TITLE_END=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 13 )) )
+        TC_VIDEO_OUTRO_TITLE_START=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 10 )) )
+        TC_VIDEO_OUTRO_TITLE_END=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 3 )) )
+
 
         # Build the titles file in the format of an SRT file.
         echo "1" >> $TITLES
-        echo "$TC_INTRO_TITLE_START,000 --> $TC_INTRO_TITLE_END,000" >> $TITLES
-        echo "[AUDIO] ${META_VALUES[1]} / '${META_VALUES[0]}' / ${META_VALUES[8]}" >> $TITLES
-        echo "[VIDIO] ${META_VALUES[10]} / '${META_VALUES[9]}' / ${META_VALUES[12]}" >> $TITLES
-        echo >> $TITLES
+        echo "$TC_AUDIO_INTRO_TITLE_START,000 --> $TC_AUDIO_INTRO_TITLE_END,000" >> $TITLES
+        echo "[AUDIO]" >> $TITLES
+        echo "${META_VALUES[0]} / '${META_VALUES[1]}' / ${META_VALUES[8]}" >> $TITLES
+
         echo "2" >> $TITLES
-        echo "$TC_OUTRO_TITLE_START,000 --> $TC_OUTRO_TITLE_END,000" >> $TITLES
-        echo "[AUDIO] ${META_VALUES[1]} / '${META_VALUES[0]}' / ${META_VALUES[8]}" >> $TITLES
-        echo "[VIDIO] ${META_VALUES[10]} / '${META_VALUES[9]}' / ${META_VALUES[12]}" >> $TITLES
+        echo "$TC_VIDEO_INTRO_TITLE_START,000 --> $TC_VIDEO_INTRO_TITLE_END,000" >> $TITLES
+        echo "[VIDEO]" >> $TITLES
+        echo "${META_VALUES[9]} / '${META_VALUES[10]}' / ${META_VALUES[12]}" >> $TITLES
+
+        echo "3" >> $TITLES
+        echo "$TC_AUDIO_OUTRO_TITLE_START,000 --> $TC_AUDIO_OUTRO_TITLE_END,000" >> $TITLES
+        echo "[AUDIO]" >> $TITLES
+        echo "${META_VALUES[0]} / '${META_VALUES[1]}' / ${META_VALUES[8]}" >> $TITLES
+
+        echo "4" >> $TITLES
+        echo "$TC_VIDEO_OUTRO_TITLE_START,000 --> $TC_VIDEO_OUTRO_TITLE_END,000" >> $TITLES
+        echo "[VIDEO]" >> $TITLES
+        echo "${META_VALUES[9]} / '${META_VALUES[10]}' / ${META_VALUES[12]}" >> $TITLES
  }
 
 # FUNCTION: Gets metadata for final file. Set MANUAL_META before calling to toggle manual entry.
@@ -100,10 +115,14 @@ START_TIMECODE=""
 TITLES=$(mktemp)
 
 TC_DURATION_SECONDS=""
-TC_INTRO_TITLE_START=""
-TC_INTRO_TITLE_END=""
-TC_OUTRO_TITLE_START=""
-TC_OUTRO_TITLE_END=""
+TC_AUDIO_INTRO_TITLE_START=""
+TC_AUDIO_INTRO_TITLE_END=""
+TC_VIDEO_INTRO_TITLE_START=""
+TC_VIDEO_INTRO_TITLE_END=""
+TC_AUDIO_OUTRO_TITLE_START=""
+TC_AUDIO_OUTRO_TITLE_END=""
+TC_VIDEO_OUTRO_TITLE_START=""
+TC_VIDEO_OUTRO_TITLE_END=""
 
 META_KEYS=(title artist album_artist album date track genre audio_URL audio_copyright video_title video_author video_URL video_copyright)
 META_VALUES=()
@@ -169,7 +188,7 @@ ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
         -metadata ${META_KEYS[6]}="${META_VALUES[6]}" \
         -metadata ${META_KEYS[7]}="${META_VALUES[7]}" \
         -metadata comment="$( cat $META_COMMENT )" \
-        -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720,subtitles=$TITLES:force_style='FontName=DejaVu Mono,Alignment=1,Fontsize=8,BorderStyle=3'" \
+        -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720,subtitles=$TITLES:force_style='FontName=DejaVu Mono,Alignment=1,Fontsize=12,BorderStyle=3'" \
         $ARG_LENGTH \
         output.mp4
 
