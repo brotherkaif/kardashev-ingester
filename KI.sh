@@ -132,6 +132,8 @@ OPT_MANUAL_META=false
 
 ARG_LENGTH="-shortest"
 
+OUTPUT_FILENAME=$( date | md5sum | cut -c -7 )
+
 # Get input arguements and assign them to variables.
 while getopts ":v:a:t:md" opt;
 do
@@ -190,7 +192,7 @@ ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
         -metadata comment="$( cat $META_COMMENT )" \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720,subtitles=$TITLES:force_style='FontName=DejaVu Mono,Alignment=1,Fontsize=12,BorderStyle=3'" \
         $ARG_LENGTH \
-        output.mp4
+        $OUTPUT_FILENAME\.mp4
 
 # =============
 # END OF SCRIPT
