@@ -49,6 +49,7 @@ then
     exit 1
 fi
 
+#       -metadata comment="$( cat $META_COMMENT )" \
 
 # Run the muxing job via FFmpeg.
 ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
@@ -56,7 +57,6 @@ ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
         -metadata title="$( jq '.file.title' $INPUT_FILE )" \
         -metadata artist="$( jq '.file.author' $INPUT_FILE )" \
         -metadata date="$( date +%Y )" \
-#       -metadata comment="$( cat $META_COMMENT )" \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
         $ARG_LENGTH \
         $( jq '.file.title' $INPUT_FILE )\.mp4
