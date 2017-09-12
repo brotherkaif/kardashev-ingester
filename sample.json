@@ -1,0 +1,29 @@
+{"file": {
+    "title": "Jfh4d3d",
+    "author": "someone",
+    "author_URI": "http://somewhere.com",
+    "source_URI": "http://somewhere.com",
+    "licence": "CC BY NA",
+    "licence_URI": "http://creative.com",
+    "audio_stream": {
+        "title": "something",
+        "author": "someone",
+        "author_URI": "http://somewhere.com",
+        "source_URI": "http://somewhere.com",
+        "source_file": "http://somewhere.com/file.mp4",
+        "licence": "CC BY NA",
+        "licence_URI": "http://creative.com",
+        "modifications": "none"
+        },
+    "video_stream": {
+        "title": "something",
+        "author": "someone",
+        "author_URI": "http://somewhere.com",
+        "source_URI": "http://somewhere.com",
+        "source_file": "http://somewhere.com/file.mp4",
+        "licence": "CC BY NA",
+        "licence_URI": "http://creative.com",
+        "modifications": "none"
+        }
+    }
+}
