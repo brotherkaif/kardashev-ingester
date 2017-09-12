@@ -54,12 +54,12 @@ fi
 # Run the muxing job via FFmpeg.
 ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
         -map 0:0 -map 1:0 \
-        -metadata title="$( jq '.file.title' $INPUT_FILE )" \
-        -metadata artist="$( jq '.file.author' $INPUT_FILE )" \
+        -metadata title="$( jq -r '.file.title' $INPUT_FILE )" \
+        -metadata artist="$( jq -r '.file.author' $INPUT_FILE )" \
         -metadata date="$( date +%Y )" \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
         $ARG_LENGTH \
-        $( jq '.file.title' $INPUT_FILE )\.mp4
+        $( jq -r '.file.title' $INPUT_FILE )\.mp4
 
 # =============
 # END OF SCRIPT
