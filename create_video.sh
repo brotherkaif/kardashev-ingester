@@ -1,19 +1,28 @@
 #/bin/bash
 # Creates a file based on input JSON and edit parameters.
 
+INPUT_VIDEO=""
+INPUT_AUDIO=""
+START_TIMECODE=""
 INPUT_FILE="" 
-START_TIMECODE="" 
+
 ARG_LENGTH="-shortest"
 
 # Get input arguements and assign them to variables.
-while getopts ":f:td" opt;
+while getopts ":v:a:t:f:d" opt;
 do
     case $opt in
-        f)
-            INPUT_FILE=$OPTARG 
+        v)
+            INPUT_VIDEO=$OPTARG 
             ;;
+        a)
+            INPUT_AUDIO=$OPTARG 
+            ;; 
         t)
             START_TIMECODE=$OPTARG 
+            ;;
+        f)
+            INPUT_FILE=$OPTARG
             ;;
         d)
             echo DRY RUN MODE
@@ -34,15 +43,15 @@ done
 
 
 # If no arguments passed through, exit gracefully.
-if [ -z "$INPUT_FILE" ] || [ -z "$START_TIMECODE" ]
+if [ -z "$INPUT_VIDEO" ] || [ -z "$INPUT_AUDIO" ] || [ -z "$START_TIMECODE" ] || [ -z "$INPUT_FILE" ]
 then
-        echo 'Something went wrong! You need to specify an input JSON (-f) and start timecode (-t).' >&2
+    echo 'Something went wrong! You need to specify video (-v), audio (-a) and start timecode (-t).' >&2
     exit 1
 fi
 
 
 # Run the muxing job via FFmpeg.
-ffmpeg  -ss $START_TIMECODE -i $( jq '.file.video_stream.source_file' $INPUT_FILE ) -i $( jq '.file.audio_stream.source_file' $INPUT_FILE ) \
+ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
         -map 0:0 -map 1:0 \
         -metadata title="$( jq '.file.title' $INPUT_FILE )" \
         -metadata artist="$( jq '.file.author' $INPUT_FILE )" \

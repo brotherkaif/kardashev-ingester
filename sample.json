@@ -1,29 +1,25 @@
 {"file": {
     "title": "Jfh4d3d",
-    "author": "someone",
-    "author_URI": "http://somewhere.com",
-    "source_URI": "http://somewhere.com",
-    "licence": "CC BY NA",
-    "licence_URI": "http://creative.com",
+    "author": "Brother Kaif",
+    "licence": "CC BY-SA 4.0",
+    "licence_URI": "https://creativecommons.org/licenses/by-sa/4.0/",
     "audio_stream": {
-        "title": "something",
-        "author": "someone",
-        "author_URI": "http://somewhere.com",
-        "source_URI": "http://somewhere.com",
-        "source_file": "http://somewhere.com/file.mp4",
+        "title": "Downer",
+        "author": "half cocked",
+        "author_URI": "http://freemusicarchive.org/music/half_cocked/",
+        "source_URI": "http://freemusicarchive.org/music/half_cocked/Condensed_Milk/half_cocked_-_Condensed_Milk_-_02_-_Downer",
         "licence": "CC BY NA",
-        "licence_URI": "http://creative.com",
+        "licence_URI": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
         "modifications": "none"
         },
     "video_stream": {
-        "title": "something",
-        "author": "someone",
-        "author_URI": "http://somewhere.com",
-        "source_URI": "http://somewhere.com",
-        "source_file": "http://somewhere.com/file.mp4",
-        "licence": "CC BY NA",
-        "licence_URI": "http://creative.com",
-        "modifications": "none"
+        "title": "skate park slow motion",
+        "author": "Fps Motion",
+        "author_URI": "https://www.youtube.com/channel/UCsWA_0dJGqVOHd4t0sGW5GQ",
+        "source_URI": "https://youtu.be/4y5wC7pDpFc",
+        "licence": "CC BY 3.0",
+        "licence_URI": "https://creativecommons.org/licenses/by/3.0/",
+        "modifications": "Cropped to a 1:1 aspect ratio and duration shortened."
         }
     }
 }
