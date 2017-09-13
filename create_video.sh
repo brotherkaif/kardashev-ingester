@@ -3,34 +3,32 @@
 
 INPUT_METADATA=$1
 ARG_LENGTH="-shortest"
-META_COMMENT=$(cat <<EOF
-[ATTRIBUTION DECLARATION]
-This work, "$( jq -r '.file.title' $INPUT_METADATA )", is a derivative of the works listed below. "$( jq -r '.file.title' $INPUT_METADATA )" was created by $( jq -r '.file.author' $INPUT_METADATA ) and is licenced under a $( jq -r '.file.licence' $INPUT_METADATA ) licence.
-
-
-[AUDIO ATTRIBUTION]
-Track: $( jq -r '.file.audio_stream.title' $INPUT_METADATA )
-Artist: $( jq -r '.file.audio_stream.author' $INPUT_METADATA )
-Licence: $( jq -r '.file.audio_stream.licence' $INPUT_METADATA )
-Modifications: $( jq -r '.file.audio_stream.modifications' $INPUT_METADATA )
-
-(further audio information)
-$( jq -r '.file.audio_stream.source_URI' $INPUT_METADATA )
-$( jq -r '.file.audio_stream.author_URI' $INPUT_METADATA )
-$( jq -r '.file.audio_stream.licence_URI' $INPUT_METADATA )
-
-
-[VIDEO ATTRIBUTION]
-Track: $( jq -r '.file.video_stream.title' $INPUT_METADATA )
-Artist: $( jq -r '.file.video_stream.author' $INPUT_METADATA )
-Licence: $( jq -r '.file.video_stream.licence' $INPUT_METADATA )
-Modifications: $( jq -r '.file.video_stream.modifications' $INPUT_METADATA )
-
-(further video information)
-$( jq -r '.file.video_stream.source_URI' $INPUT_METADATA )
-$( jq -r '.file.video_stream.author_URI' $INPUT_METADATA )
-$( jq -r '.file.video_stream.licence_URI' $INPUT_METADATA )
-
+META_COMMENT="[ATTRIBUTION DECLARATION]\n
+This work, "$( jq -r '.file.title' $INPUT_METADATA )", is a derivative of the works listed below. "$( jq -r '.file.title' $INPUT_METADATA )" was created by $( jq -r '.file.author' $INPUT_METADATA ) and is licenced under a $( jq -r '.file.licence' $INPUT_METADATA ) licence.\n
+\n
+\n
+[AUDIO ATTRIBUTION]\n
+Track: $( jq -r '.file.audio_stream.title' $INPUT_METADATA )\n
+Artist: $( jq -r '.file.audio_stream.author' $INPUT_METADATA )\n
+Licence: $( jq -r '.file.audio_stream.licence' $INPUT_METADATA )\n
+Modifications: $( jq -r '.file.audio_stream.modifications' $INPUT_METADATA )\n
+\n
+(further audio information)\n
+$( jq -r '.file.audio_stream.source_URI' $INPUT_METADATA )\n
+$( jq -r '.file.audio_stream.author_URI' $INPUT_METADATA )\n
+$( jq -r '.file.audio_stream.licence_URI' $INPUT_METADATA )\n
+\n
+\n
+[VIDEO ATTRIBUTION]\n
+Track: $( jq -r '.file.video_stream.title' $INPUT_METADATA )\n
+Artist: $( jq -r '.file.video_stream.author' $INPUT_METADATA )\n
+Licence: $( jq -r '.file.video_stream.licence' $INPUT_METADATA )\n
+Modifications: $( jq -r '.file.video_stream.modifications' $INPUT_METADATA )\n
+\n
+(further video information)\n
+$( jq -r '.file.video_stream.source_URI' $INPUT_METADATA )\n
+$( jq -r '.file.video_stream.author_URI' $INPUT_METADATA )\n
+$( jq -r '.file.video_stream.licence_URI' $INPUT_METADATA )\n
 EOF
 )
 
