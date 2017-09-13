@@ -1,65 +1,50 @@
 #/bin/bash
 # Creates a file based on input JSON and edit parameters.
 
-INPUT_VIDEO=""
-INPUT_AUDIO=""
-START_TIMECODE=""
-INPUT_FILE="" 
-
+INPUT_METADATA=$1
 ARG_LENGTH="-shortest"
-
-# Get input arguements and assign them to variables.
-while getopts ":v:a:t:f:d" opt;
-do
-    case $opt in
-        v)
-            INPUT_VIDEO=$OPTARG 
-            ;;
-        a)
-            INPUT_AUDIO=$OPTARG 
-            ;; 
-        t)
-            START_TIMECODE=$OPTARG 
-            ;;
-        f)
-            INPUT_FILE=$OPTARG
-            ;;
-        d)
-            echo DRY RUN MODE
-            echo ============
-            echo Output file will be limited to 30 seconds.
-            ARG_LENGTH="-t 00:00:30"
-            ;;
-        \?)
-            echo "Invalid option: -$OPTARG" >&2
-            exit 1
-            ;;
-        :)
-            echo "Option -$OPTARG requires an arguement." >&2
-            exit 1
-            ;;
-    esac
-done
+META_COMMENT=$(cat <<EOF
+[ATTRIBUTION DECLARATION]
+This work, "$( jq -r '.file.title' $INPUT_METADATA )", is a derivative of the works listed below. "$( jq -r '.file.title' $INPUT_METADATA )" was created by $( jq -r '.file.author' $INPUT_METADATA ) and is licenced under a $( jq -r '.file.licence' $INPUT_METADATA ) licence.
 
 
-# If no arguments passed through, exit gracefully.
-if [ -z "$INPUT_VIDEO" ] || [ -z "$INPUT_AUDIO" ] || [ -z "$START_TIMECODE" ] || [ -z "$INPUT_FILE" ]
-then
-    echo 'Something went wrong! You need to specify video (-v), audio (-a) and start timecode (-t).' >&2
-    exit 1
-fi
+[AUDIO ATTRIBUTION]
+Track: $( jq -r '.file.audio_stream.title' $INPUT_METADATA )
+Artist: $( jq -r '.file.audio_stream.author' $INPUT_METADATA )
+Licence: $( jq -r '.file.audio_stream.licence' $INPUT_METADATA )
+Modifications: $( jq -r '.file.audio_stream.modifications' $INPUT_METADATA )
 
-#       -metadata comment="$( cat $META_COMMENT )" \
+(further audio information)
+$( jq -r '.file.audio_stream.source_URI' $INPUT_METADATA )
+$( jq -r '.file.audio_stream.author_URI' $INPUT_METADATA )
+$( jq -r '.file.audio_stream.licence_URI' $INPUT_METADATA )
+
+
+[VIDEO ATTRIBUTION]
+Track: $( jq -r '.file.video_stream.title' $INPUT_METADATA )
+Artist: $( jq -r '.file.video_stream.author' $INPUT_METADATA )
+Licence: $( jq -r '.file.video_stream.licence' $INPUT_METADATA )
+Modifications: $( jq -r '.file.video_stream.modifications' $INPUT_METADATA )
+
+(further video information)
+$( jq -r '.file.video_stream.source_URI' $INPUT_METADATA )
+$( jq -r '.file.video_stream.author_URI' $INPUT_METADATA )
+$( jq -r '.file.video_stream.licence_URI' $INPUT_METADATA )
+
+EOF
+)
 
 # Run the muxing job via FFmpeg.
-ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
+ffmpeg  -ss $( jq -r '.edit_info.start_timecode' $INPUT_METADATA ) \
+        -i $( jq -r '.edit_info.video_file' $INPUT_METADATA ) \
+        -i $( jq -r '.edit_info.audio_file' $INPUT_METADATA ) \
         -map 0:0 -map 1:0 \
-        -metadata title="$( jq -r '.file.title' $INPUT_FILE )" \
-        -metadata artist="$( jq -r '.file.author' $INPUT_FILE )" \
-        -metadata date="$( date +%Y )" \
+        -metadata title="$( jq -r '.file.title' $INPUT_METADATA )" \
+        -metadata artist="$( jq -r '.file.author' $INPUT_METADATA )" \
+        -metadata comment=$META_COMMENT \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
         $ARG_LENGTH \
-        $( jq -r '.file.title' $INPUT_FILE )\.mp4
+        $( jq -r '.file.title' $INPUT_METADATA )\.mp4
 
 # =============
 # END OF SCRIPT
