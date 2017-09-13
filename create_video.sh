@@ -28,9 +28,7 @@ Modifications: $( jq -r '.file.video_stream.modifications' $INPUT_METADATA )\n
 (further video information)\n
 $( jq -r '.file.video_stream.source_URI' $INPUT_METADATA )\n
 $( jq -r '.file.video_stream.author_URI' $INPUT_METADATA )\n
-$( jq -r '.file.video_stream.licence_URI' $INPUT_METADATA )\n
-EOF
-)
+$( jq -r '.file.video_stream.licence_URI' $INPUT_METADATA )"
 
 echo $META_COMMENT
 
