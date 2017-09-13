@@ -39,7 +39,7 @@ ffmpeg  -ss $( jq -r '.edit_info.start_timecode' $INPUT_METADATA ) \
         -map 0:0 -map 1:0 \
         -metadata title="$( jq -r '.file.title' $INPUT_METADATA )" \
         -metadata artist="$( jq -r '.file.author' $INPUT_METADATA )" \
-        -metadata comment=$( echo "$META_COMMENT" ) \
+        -metadata comment="$( echo "$META_COMMENT" )" \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
         $ARG_LENGTH \
         $( jq -r '.file.title' $INPUT_METADATA )\.mp4
