@@ -34,6 +34,8 @@ $( jq -r '.file.video_stream.licence_URI' $INPUT_METADATA )
 EOF
 )
 
+echo $META_COMMENT
+
 # Run the muxing job via FFmpeg.
 ffmpeg  -ss $( jq -r '.edit_info.start_timecode' $INPUT_METADATA ) \
         -i $( jq -r '.edit_info.video_file' $INPUT_METADATA ) \
