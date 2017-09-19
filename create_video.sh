@@ -1,7 +1,8 @@
 #/bin/bash
 # Creates a file based on input JSON and edit parameters.
 
-INPUT_METADATA=$1
+echo ... in the create video script!
+
 ARG_LENGTH="-shortest"
 META_COMMENT=$"[ATTRIBUTION DECLARATION]
 This work, \"$( jq -r '.file.title' $INPUT_METADATA )\", is a derivative of the works listed below. \"$( jq -r '.file.title' $INPUT_METADATA )\" was created by $( jq -r '.file.author' $INPUT_METADATA ) and is licenced under a $( jq -r '.file.licence' $INPUT_METADATA ) licence.

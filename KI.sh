@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # Ingesting script that uses FFmpeg to convert input video and audio into a standardised 1:1 format.
 
 # START OF FUNCTION DECLARATIONS
@@ -135,7 +135,7 @@
 #OUTPUT_FILENAME=$( date | md5sum | cut -c -7 )
 
 # Get input arguements and assign them to variables.
-while getopts ":id" opt;
+while getopts ":i:d" opt;
 do
     case $opt in
         i)
@@ -166,7 +166,9 @@ then
     exit 1
 fi
 
-export $INPUT_METADATA
+export INPUT_METADATA
+echo Exported out the metadata...
+echo Invoking create video script...
 ./create_video.sh
 
 #Get_Metadata
