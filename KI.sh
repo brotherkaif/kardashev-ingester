@@ -65,40 +65,6 @@
 #        echo "${META_VALUES[9]} / '${META_VALUES[10]}' / ${META_VALUES[12]}" >> $TITLES
 # }
 
-## FUNCTION: Gets metadata for final file. Set MANUAL_META before calling to toggle manual entry.
-#Get_Metadata () {
-#
-#        # Iterate through all of the META_KEYS and get the META_VALUES.
-#        for ITERATION in {0..12}
-#        do
-#                # If manual override has not been activated, attempt to get info from INPUT_AUDIO.
-#                if [ $OPT_MANUAL_META = false ]
-#                then
-#                        META_VALUES[$ITERATION]="$( ffprobe -v error -show_entries format_tags=${META_KEYS[$ITERATION]} -of default=noprint_wrappers=1:nokey=1 $INPUT_AUDIO )"
-#                fi
-#
-#                # If the META_VALUE is empty for some reason, ask the user to input it manually.
-#                if [ -z "${META_VALUES[$ITERATION]}" ]
-#                then
-#                        read -p "Enter the ${META_KEYS[$ITERATION]}: " META_VALUES[$ITERATION]
-#                fi
-#        done
-#
-#        # Once all the META_VALUES have been collected create the META_COMMENT value
-#        echo "[AUDIO DETAILS]" >> $META_COMMENT
-#        echo "TITLE: ${META_VALUES[0]}" >> $META_COMMENT
-#        echo "ARTIST: ${META_VALUES[1]}" >> $META_COMMENT
-#        echo "URL: ${META_VALUES[7]}" >> $META_COMMENT
-#        echo "Copyright: ${META_VALUES[8]}" >> $META_COMMENT
-#        echo >> $META_COMMENT
-#        echo "[VIDEO DETAILS]" >> $META_COMMENT
-#        echo "TITLE: ${META_VALUES[9]}" >> $META_COMMENT
-#        echo "AUTHOR: ${META_VALUES[10]}" >> $META_COMMENT
-#        echo "URL: ${META_VALUES[11]}" >> $META_COMMENT
-#        echo "Copyright: ${META_VALUES[12]}" >> $META_COMMENT
-#                
-# }
-
 # ============================
 # END OF FUNCTION DECLARATIONS
  
@@ -170,25 +136,6 @@ export INPUT_METADATA
 echo Exported out the metadata...
 echo Invoking create video script...
 ./create_video.sh
-
-#Get_Metadata
-#Construct_Titles
-#
-## Run the muxing job via FFmpeg.
-#ffmpeg  -ss $START_TIMECODE -i $INPUT_VIDEO -i $INPUT_AUDIO \
-#        -map 0:0 -map 1:0 \
-#        -metadata ${META_KEYS[0]}="${META_VALUES[0]}" \
-#        -metadata ${META_KEYS[1]}="${META_VALUES[1]}" \
-#        -metadata ${META_KEYS[2]}="${META_VALUES[2]}" \
-#        -metadata ${META_KEYS[3]}="${META_VALUES[3]}" \
-#        -metadata ${META_KEYS[4]}="${META_VALUES[4]}" \
-#        -metadata ${META_KEYS[5]}="${META_VALUES[5]}" \
-#        -metadata ${META_KEYS[6]}="${META_VALUES[6]}" \
-#        -metadata ${META_KEYS[7]}="${META_VALUES[7]}" \
-#        -metadata comment="$( cat $META_COMMENT )" \
-#        -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720,subtitles=$TITLES:force_style='FontName=DejaVu Mono,Alignment=1,Fontsize=12,BorderStyle=3'" \
-#        $ARG_LENGTH \
-#        $OUTPUT_FILENAME\.mp4
 
 # =============
 # END OF SCRIPT
