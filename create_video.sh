@@ -1,8 +1,15 @@
 #/bin/bash
 # Creates a file based on input JSON and edit parameters.
 
+# Check for dry run.
+if [ $DRY_RUN = TRUE ]
+then
+    ARG_DURATION="00:00:30"
+else
+    ARG_LENGTH="-shortest"
+fi
+
 # Put together the metadata comment value.
-ARG_LENGTH="-shortest"
 META_COMMENT=$"[ATTRIBUTION DECLARATION]
 This work, \"$( jq -r '.file.title' $INPUT_METADATA )\", is a derivative of the works listed below. \"$( jq -r '.file.title' $INPUT_METADATA )\" was created by $( jq -r '.file.author' $INPUT_METADATA ) and is licenced under a $( jq -r '.file.licence' $INPUT_METADATA ) licence.
 
@@ -36,4 +43,4 @@ ffmpeg  -ss $( jq -r '.edit_info.start_timecode' $INPUT_METADATA ) \
         -metadata comment="$( echo "$META_COMMENT" )" \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
         $ARG_LENGTH \
-        $( jq -r '.file.title' $INPUT_METADATA )\.webm
+        ../output/$( jq -r '.file.title' $INPUT_METADATA )/$( jq -r '.file.title' $INPUT_METADATA )\.webm

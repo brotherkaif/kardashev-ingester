@@ -4,6 +4,8 @@
 # START OF SCRIPT
 # ===============
 
+DRY_RUN=FALSE
+
 # Get input arguements and assign them to variables.
 while getopts ":i:d" opt;
 do
@@ -36,7 +38,10 @@ then
     exit 1
 fi
 
+mkdir -p ../output/$( jq -r '.file.title' $INPUT_METADATA )
+
 export INPUT_METADATA
+export DRY_RUN
 ./create_SRT_titles.sh
 ./create_video.sh
 
