@@ -43,8 +43,9 @@ jq -r '.file' $INPUT_METADATA > ../output/$( jq -r '.file.title' $INPUT_METADATA
 
 export INPUT_METADATA
 export DRY_RUN
-./create_SRT_titles.sh
-./create_video.sh
+#./create_SRT_titles.sh
+./create_ASS_titles.sh
+#./create_video.sh
 
 # =============
 # END OF SCRIPT
