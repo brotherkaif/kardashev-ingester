@@ -37,7 +37,7 @@ TC_VIDEO_OUTRO_TITLE_START=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 10 )
 TC_VIDEO_OUTRO_TITLE_END=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 3 )) )
 
 # Build the titles file in the format of an SRT file.
-cat <<EOF > ../output/$( jq -r '.file.title' $INPUT_METADATA )/$( jq -r '.file.title' $INPUT_METADATA ).srt
+cat <<EOF > ../output/$( jq -r '.file.title' $INPUT_METADATA ).srt
 $TC_AUDIO_INTRO_TITLE_START,000 --> $TC_AUDIO_INTRO_TITLE_END,000
 [AUDIO]
 $( jq -r '.file.audio_stream.author' $INPUT_METADATA ) / "$( jq -r '.file.audio_stream.title' $INPUT_METADATA )" / $( jq -r '.file.audio_stream.licence' $INPUT_METADATA )

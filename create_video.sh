@@ -43,4 +43,4 @@ ffmpeg  -ss $( jq -r '.edit_info.start_timecode' $INPUT_METADATA ) \
         -metadata comment="$( echo "$META_COMMENT" )" \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
         $ARG_DURATION \
-        ../output/$( jq -r '.file.title' $INPUT_METADATA )/$( jq -r '.file.title' $INPUT_METADATA )\.webm
+        ../output/$( jq -r '.file.title' $INPUT_METADATA )\.webm

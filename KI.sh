@@ -38,8 +38,8 @@ then
     exit 1
 fi
 
-mkdir -p ../output/$( jq -r '.file.title' $INPUT_METADATA )
-jq -r '.file' $INPUT_METADATA > ../output/$( jq -r '.file.title' $INPUT_METADATA )/$( jq -r '.file.title' $INPUT_METADATA ).json
+mkdir -p ../output
+jq -r '.file' $INPUT_METADATA > ../output/$( jq -r '.file.title' $INPUT_METADATA ).json
 
 export INPUT_METADATA
 export DRY_RUN
