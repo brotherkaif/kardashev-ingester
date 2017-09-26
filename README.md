@@ -30,18 +30,16 @@ The output video itself is a the video stream of the input video file muxed with
 
 ### JSON Metadata File
 
-Inside the JSON folder in the repository is a schema and a sample JSON file. This file needs to be supplied along with the audio and video file so that the script can create subtitle files and handle metadata correctly.
+Inside the JSON folder in the repository is a schema and a sample JSON file. This file needs to be supplied along with the audio and video file so that the script can create subtitle files and handle metadata correctly. The JSON file also provides the script with the location of the source video and source audio files.
 
 ### Running The Script
 
-The script requires the following arguements to be passed through it.
+The script requires the following arguement to be passed through it.
 
-* -v: The input video file.
-* -a: The input audio file.
 * -i: The input JSON metadata file.
 
 ```
-./KI.sh -i input.json -v video.mpeg -a audio.mp3
+./KI.sh -i input.json
 ```
 
 ## Built With
