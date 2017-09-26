@@ -40,9 +40,9 @@ The script requires the following arguements to be passed through it.
 * -a: The input audio file.
 * -i: The input JSON metadata file.
 
-'''
+```
 ./KI.sh -i input.json -v video.mpeg -a audio.mp3
-'''
+```
 
 ## Built With
 
