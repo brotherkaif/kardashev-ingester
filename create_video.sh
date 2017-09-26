@@ -1,8 +1,15 @@
 #/bin/bash
 # Creates a file based on input JSON and edit parameters.
 
-INPUT_METADATA=$1
-ARG_LENGTH="-shortest"
+# Check for dry run.
+if [ $DRY_RUN = "TRUE" ]
+then
+    ARG_DURATION="-t 00:00:20"
+else
+    ARG_DURATION="-shortest"
+fi
+
+# Put together the metadata comment value.
 META_COMMENT=$"[ATTRIBUTION DECLARATION]
 This work, \"$( jq -r '.file.title' $INPUT_METADATA )\", is a derivative of the works listed below. \"$( jq -r '.file.title' $INPUT_METADATA )\" was created by $( jq -r '.file.author' $INPUT_METADATA ) and is licenced under a $( jq -r '.file.licence' $INPUT_METADATA ) licence.
 
@@ -26,7 +33,6 @@ $( jq -r '.file.video_stream.source_URI' $INPUT_METADATA )
 $( jq -r '.file.video_stream.author_URI' $INPUT_METADATA )
 $( jq -r '.file.video_stream.licence_URI' $INPUT_METADATA )"
 
-
 # Run the muxing job via FFmpeg.
 ffmpeg  -ss $( jq -r '.edit_info.start_timecode' $INPUT_METADATA ) \
         -i $( jq -r '.edit_info.video_file' $INPUT_METADATA ) \
@@ -36,8 +42,5 @@ ffmpeg  -ss $( jq -r '.edit_info.start_timecode' $INPUT_METADATA ) \
         -metadata artist="$( jq -r '.file.author' $INPUT_METADATA )" \
         -metadata comment="$( echo "$META_COMMENT" )" \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
-        $ARG_LENGTH \
-        $( jq -r '.file.title' $INPUT_METADATA )\.mp4
-
-# =============
-# END OF SCRIPT
+        $ARG_DURATION \
+        ../output/$( jq -r '.file.title' $INPUT_METADATA )/$( jq -r '.file.title' $INPUT_METADATA )\.webm
