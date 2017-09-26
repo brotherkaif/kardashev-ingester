@@ -37,7 +37,13 @@
                 "type": "string",
                 "format": "uri"
             },
-            "audio_stream": {
+            "energy_level": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 5,
+                "multipleOf": 1.0
+            },
+             "audio_stream": {
                 "type": "object",
                 "properties": {
                     "title": {
