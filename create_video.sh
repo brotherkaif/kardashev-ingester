@@ -2,11 +2,11 @@
 # Creates a file based on input JSON and edit parameters.
 
 # Check for dry run.
-if [ $DRY_RUN = TRUE ]
+if [ $DRY_RUN = "TRUE" ]
 then
-    ARG_DURATION="00:00:30"
+    ARG_DURATION="-t 00:00:20"
 else
-    ARG_LENGTH="-shortest"
+    ARG_DURATION="-shortest"
 fi
 
 # Put together the metadata comment value.
@@ -42,5 +42,5 @@ ffmpeg  -ss $( jq -r '.edit_info.start_timecode' $INPUT_METADATA ) \
         -metadata artist="$( jq -r '.file.author' $INPUT_METADATA )" \
         -metadata comment="$( echo "$META_COMMENT" )" \
         -vf "scale=iw*sar:ih,yadif,fps=fps=25,crop=in_h:in_h,scale=720:720" \
-        $ARG_LENGTH \
+        $ARG_DURATION \
         ../output/$( jq -r '.file.title' $INPUT_METADATA )/$( jq -r '.file.title' $INPUT_METADATA )\.webm

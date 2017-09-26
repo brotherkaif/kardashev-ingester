@@ -16,7 +16,7 @@ do
         d)
             echo DRY RUN MODE
             echo ============
-            echo Output file will be limited to 30 seconds.
+            echo Output file will be limited to 20 seconds.
             DRY_RUN=TRUE
             ;;
         \?)
@@ -39,11 +39,13 @@ then
 fi
 
 mkdir -p ../output/$( jq -r '.file.title' $INPUT_METADATA )
+jq -r '.file' $INPUT_METADATA > ../output/$( jq -r '.file.title' $INPUT_METADATA )/$( jq -r '.file.title' $INPUT_METADATA ).json
 
 export INPUT_METADATA
 export DRY_RUN
-./create_SRT_titles.sh
-./create_video.sh
+#./create_SRT_titles.sh
+./create_ASS_titles.sh
+#./create_video.sh
 
 # =============
 # END OF SCRIPT
