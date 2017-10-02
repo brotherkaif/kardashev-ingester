@@ -26,7 +26,7 @@ Calculate_Timecode () {
 }
 
 # Calculate timecodes for SRT file.
-TC_DURATION_SECONDS=$( ffprobe -i $( jq -r '.edit_info.audio_file' $INPUT_METADATA ) -show_format -v quiet | sed -n 's/duration=//p' | cut -d. -f1 )
+TC_DURATION_SECONDS=$( ffprobe -i $( jq -r '.edit_info.audio_file' $INPUT_DIRECTORY/$INPUT_METADATA ) -show_format -v quiet | sed -n 's/duration=//p' | cut -d. -f1 )
 TC_AUDIO_INTRO_TITLE_START="00:00:03"
 TC_AUDIO_INTRO_TITLE_END="00:00:10"
 TC_VIDEO_INTRO_TITLE_START="00:00:13"
@@ -37,23 +37,23 @@ TC_VIDEO_OUTRO_TITLE_START=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 10 )
 TC_VIDEO_OUTRO_TITLE_END=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 3 )) )
 
 # Build the titles file in the format of an SRT file.
-cat <<EOF > ../output/$( jq -r '.file.title' $INPUT_METADATA ).srt
+cat <<EOF > $INPUT_DIRECTORY/../output/$( jq -r '.file.title' $INPUT_DIRECTORY/$INPUT_METADATA ).srt
 $TC_AUDIO_INTRO_TITLE_START,000 --> $TC_AUDIO_INTRO_TITLE_END,000
 [AUDIO]
-$( jq -r '.file.audio_stream.author' $INPUT_METADATA ) / "$( jq -r '.file.audio_stream.title' $INPUT_METADATA )" / $( jq -r '.file.audio_stream.licence' $INPUT_METADATA )
+$( jq -r '.file.audio_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / "$( jq -r '.file.audio_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.audio_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
 
 2
 $TC_VIDEO_INTRO_TITLE_START,000 --> $TC_VIDEO_INTRO_TITLE_END,000
 [VIDEO]
-$( jq -r '.file.video_stream.author' $INPUT_METADATA ) / "$( jq -r '.file.video_stream.title' $INPUT_METADATA )" / $( jq -r '.file.video_stream.licence' $INPUT_METADATA )
+$( jq -r '.file.video_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / "$( jq -r '.file.video_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.video_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
 
 3
 $TC_AUDIO_OUTRO_TITLE_START,000 --> $TC_AUDIO_OUTRO_TITLE_END,000
 [AUDIO]
-$( jq -r '.file.audio_stream.author' $INPUT_METADATA ) / "$( jq -r '.file.audio_stream.title' $INPUT_METADATA )" / $( jq -r '.file.audio_stream.licence' $INPUT_METADATA )
+$( jq -r '.file.audio_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / "$( jq -r '.file.audio_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.audio_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
 
 4
 $TC_VIDEO_OUTRO_TITLE_START,000 --> $TC_VIDEO_OUTRO_TITLE_END,000
 [VIDEO]
-$( jq -r '.file.video_stream.author' $INPUT_METADATA ) / "$( jq -r '.file.video_stream.title' $INPUT_METADATA )" / $( jq -r '.file.video_stream.licence' $INPUT_METADATA )
+$( jq -r '.file.video_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / "$( jq -r '.file.video_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.video_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
 EOF

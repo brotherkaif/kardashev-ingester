@@ -11,7 +11,8 @@ while getopts ":i:d" opt;
 do
     case $opt in
         i)
-            INPUT_METADATA=$OPTARG 
+            INPUT_DIRECTORY=$( dirname $OPTARG )
+            INPUT_METADATA=$( echo ${OPTARG##*/} )
             ;;
         d)
             echo DRY RUN MODE
@@ -30,7 +31,6 @@ do
     esac
 done
 
-
 # If no arguments passed through, exit gracefully.
 if [ -z "$INPUT_METADATA" ]
 then
@@ -38,9 +38,10 @@ then
     exit 1
 fi
 
-mkdir -p ../output
-jq -r '.file' $INPUT_METADATA > ../output/$( jq -r '.file.title' $INPUT_METADATA ).json
+mkdir -p $INPUT_DIRECTORY/../output
+jq -r '.file' $INPUT_DIRECTORY/$INPUT_METADATA > $INPUT_DIRECTORY/../output/$( jq -r '.file.title' $INPUT_DIRECTORY/$INPUT_METADATA ).json
 
+export INPUT_DIRECTORY
 export INPUT_METADATA
 export DRY_RUN
 #./create_SRT_titles.sh
