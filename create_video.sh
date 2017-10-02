@@ -38,6 +38,8 @@ ffmpeg  -ss $( jq -r '.edit_info.start_timecode' $INPUT_DIRECTORY/$INPUT_METADAT
         -i $INPUT_DIRECTORY/$( jq -r '.edit_info.video_file' $INPUT_DIRECTORY/$INPUT_METADATA ) \
         -i $INPUT_DIRECTORY/$( jq -r '.edit_info.audio_file' $INPUT_DIRECTORY/$INPUT_METADATA ) \
         -map 0:0 -map 1:0 \
+        -c:v libvpx-vp9 -crf 30 -b:v 0 \
+        -c:a libopus -b:a 96k \
         -metadata title="$( jq -r '.file.title' $INPUT_DIRECTORY/$INPUT_METADATA )" \
         -metadata artist="$( jq -r '.file.author' $INPUT_DIRECTORY/$INPUT_METADATA )" \
         -metadata comment="$( echo "$META_COMMENT" )" \
