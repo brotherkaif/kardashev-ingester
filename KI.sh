@@ -1,13 +1,13 @@
 #!/bin/bash
 # Ingesting script that uses FFmpeg to convert input video and audio into a standardised 1:1 format.
 
-function_process () {
+create_outputs () {
     echo Processing $INPUT_METADATA ...
     jq -r '.file' $INPUT_DIRECTORY/$INPUT_METADATA > $INPUT_DIRECTORY/../output/$( jq -r '.file.title' $INPUT_DIRECTORY/$INPUT_METADATA ).json
     export INPUT_DIRECTORY
     export INPUT_METADATA
     export DRY_RUN
-    # ./create_SRT_titles.sh
+    ./create_SRT_titles.sh
     ./create_ASS_titles.sh
     ./create_video.sh
     echo $INPUT_FILE done!
@@ -97,11 +97,11 @@ then
     do
         INPUT_DIRECTORY=$( dirname $INPUT_FILE )
         INPUT_METADATA=$( echo ${INPUT_FILE##*/} )
-        function_process
+        create_outputs
     done
 elif [ $RUN_CONVERSION == 'y' ] && [ $SINGLE == 'TRUE' ]
 then
-    function_process
+    create_outputs
 fi
 
 # =============

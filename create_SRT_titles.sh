@@ -40,20 +40,20 @@ TC_VIDEO_OUTRO_TITLE_END=$( Calculate_Timecode $(( $TC_DURATION_SECONDS - 3 )) )
 cat <<EOF > $INPUT_DIRECTORY/../output/$( jq -r '.file.title' $INPUT_DIRECTORY/$INPUT_METADATA ).srt
 $TC_AUDIO_INTRO_TITLE_START,000 --> $TC_AUDIO_INTRO_TITLE_END,000
 [AUDIO]
-$( jq -r '.file.audio_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / "$( jq -r '.file.audio_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.audio_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
+"$( jq -r '.file.audio_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.audio_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / $( jq -r '.file.audio_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
 
 2
 $TC_VIDEO_INTRO_TITLE_START,000 --> $TC_VIDEO_INTRO_TITLE_END,000
 [VIDEO]
-$( jq -r '.file.video_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / "$( jq -r '.file.video_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.video_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
+"$( jq -r '.file.video_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.video_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / $( jq -r '.file.video_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
 
 3
 $TC_AUDIO_OUTRO_TITLE_START,000 --> $TC_AUDIO_OUTRO_TITLE_END,000
 [AUDIO]
-$( jq -r '.file.audio_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / "$( jq -r '.file.audio_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.audio_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
+"$( jq -r '.file.audio_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.audio_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / $( jq -r '.file.audio_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
 
 4
 $TC_VIDEO_OUTRO_TITLE_START,000 --> $TC_VIDEO_OUTRO_TITLE_END,000
 [VIDEO]
-$( jq -r '.file.video_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / "$( jq -r '.file.video_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.video_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
+"$( jq -r '.file.video_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.video_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / $( jq -r '.file.video_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
 EOF
