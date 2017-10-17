@@ -26,7 +26,7 @@ Calculate_Timecode () {
 }
 
 # Calculate timecodes for SRT file.
-TC_DURATION_SECONDS=$( ffprobe -i $( jq -r '.edit_info.audio_file' $INPUT_DIRECTORY/$INPUT_METADATA ) -show_format -v quiet | sed -n 's/duration=//p' | cut -d. -f1 )
+TC_DURATION_SECONDS=$( ffprobe -i $INPUT_DIRECTORY/$( jq -r '.edit_info.audio_file' $INPUT_DIRECTORY/$INPUT_METADATA ) -show_format -v quiet | sed -n 's/duration=//p' | cut -d. -f1 )
 TC_AUDIO_INTRO_TITLE_START="00:00:03"
 TC_AUDIO_INTRO_TITLE_END="00:00:10"
 TC_VIDEO_INTRO_TITLE_START="00:00:13"
