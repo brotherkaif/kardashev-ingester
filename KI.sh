@@ -9,6 +9,7 @@ create_outputs () {
     export DRY_RUN
     ./create_SRT_titles.sh
     ./create_ASS_titles.sh
+    ./create_WEBVTT_titles.sh
     ./create_video.sh
     echo $INPUT_FILE done!
 }
