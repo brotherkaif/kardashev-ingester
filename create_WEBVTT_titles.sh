@@ -41,22 +41,26 @@ cat <<EOF > $INPUT_DIRECTORY/../output/$( jq -r '.file.title' $INPUT_DIRECTORY/$
 WEBVTT - $( jq -r '.file.title' $INPUT_DIRECTORY/$INPUT_METADATA )
 
 1
-$TC_AUDIO_INTRO_TITLE_START,000 --> $TC_AUDIO_INTRO_TITLE_END,000
-[AUDIO]
-"$( jq -r '.file.audio_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.audio_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / $( jq -r '.file.audio_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
+$TC_AUDIO_INTRO_TITLE_START.000 --> $TC_AUDIO_INTRO_TITLE_END.000 align:start
+<b><u>AUDIO</u></b>
+"$( jq -r '.file.audio_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" by $( jq -r '.file.audio_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA )
+<i>$( jq -r '.file.audio_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )</i>
 
 2
-$TC_VIDEO_INTRO_TITLE_START,000 --> $TC_VIDEO_INTRO_TITLE_END,000
-[VIDEO]
-"$( jq -r '.file.video_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.video_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / $( jq -r '.file.video_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
+$TC_VIDEO_INTRO_TITLE_START.000 --> $TC_VIDEO_INTRO_TITLE_END.000 align:start
+<b><u>VIDEO</u></b>
+"$( jq -r '.file.video_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" by $( jq -r '.file.video_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA )
+<i>$( jq -r '.file.video_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )</i>
 
 3
-$TC_AUDIO_OUTRO_TITLE_START,000 --> $TC_AUDIO_OUTRO_TITLE_END,000
-[AUDIO]
-"$( jq -r '.file.audio_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.audio_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / $( jq -r '.file.audio_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
+$TC_AUDIO_OUTRO_TITLE_START.000 --> $TC_AUDIO_OUTRO_TITLE_END.000 align:end
+<b><u>AUDIO</u></b>
+"$( jq -r '.file.audio_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" by $( jq -r '.file.audio_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA )
+<i>$( jq -r '.file.audio_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )</i>
 
 4
-$TC_VIDEO_OUTRO_TITLE_START,000 --> $TC_VIDEO_OUTRO_TITLE_END,000
-[VIDEO]
-"$( jq -r '.file.video_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" / $( jq -r '.file.video_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA ) / $( jq -r '.file.video_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )
+$TC_VIDEO_OUTRO_TITLE_START.000 --> $TC_VIDEO_OUTRO_TITLE_END.000 align:end
+<b><u>VIDEO</u></b>
+"$( jq -r '.file.video_stream.title' $INPUT_DIRECTORY/$INPUT_METADATA )" by $( jq -r '.file.video_stream.author' $INPUT_DIRECTORY/$INPUT_METADATA )
+<i>$( jq -r '.file.video_stream.licence' $INPUT_DIRECTORY/$INPUT_METADATA )</i>
 EOF
